@@ -41,6 +41,11 @@ class UrlWithTrailingSlashTest extends \PHPUnit\Framework\TestCase
         'http://domain.com/page1/page2?param=1?param2=yes' => 'http://domain.com/page1/page2/?param=1?param2=yes',
     ];
 
+    private $testSetExcludedFiles = [
+        'http://domain.com/index.php' => 'http://domain.com/index.php',
+        'http://domain.com/index.php?action=true&param=false' => 'http://domain.com/index.php?action=true&param=false',
+    ];
+
     /**
      * Test if slashing happens correct
      */
@@ -74,6 +79,19 @@ class UrlWithTrailingSlashTest extends \PHPUnit\Framework\TestCase
         foreach ($this->testSet as $unslashed => $slashed) {
             $this->assertFalse(
                 (new UrlWithTrailingSlashProcessor($unslashed))->hasTrailingSlash()
+            );
+        }
+    }
+
+    /**
+     * Test if excluded file types are really excluded
+     */
+    public function testExcludedFileTypes()
+    {
+        foreach ($this->testSetExcludedFiles as $unslashed => $slashed) {
+            $this->assertEquals(
+                $slashed,
+                (new UrlWithTrailingSlash($unslashed, ['php']))->getUrlWithSlash()
             );
         }
     }

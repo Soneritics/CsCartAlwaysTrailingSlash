@@ -26,6 +26,11 @@
 class UrlWithTrailingSlash
 {
     /**
+     * @var array
+     */
+    public $excludeFileTypes = [];
+
+    /**
      * @var string
      */
     private $originalUrl;
@@ -38,10 +43,12 @@ class UrlWithTrailingSlash
     /**
      * UrlWithTrailingSlash constructor.
      * @param string $url
+     * @param array $excludeFileTypes
      */
-    public function __construct(string $url)
+    public function __construct(string $url, array $excludeFileTypes = [])
     {
         $this->originalUrl = $url;
+        $this->excludeFileTypes = $excludeFileTypes;
     }
 
     /**
@@ -89,7 +96,23 @@ class UrlWithTrailingSlash
             return;
         }
 
+        if ($this->isExcludedFile($urlWithoutGet)) {
+            $this->urlWithSlash = $this->originalUrl;
+            return;
+        }
+
         $result = $urlWithoutGet . '/' . substr($this->originalUrl, strlen($urlWithoutGet));
         $this->urlWithSlash = $result;
+    }
+
+    /**
+     * Check if a url is an excluded file
+     * @param string $url
+     * @return bool
+     */
+    private function isExcludedFile(string $url): bool
+    {
+        $exploded = explode('.', $url);
+        return in_array(strtolower($exploded[count($exploded) - 1]), $this->excludeFileTypes);
     }
 }

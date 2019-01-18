@@ -35,10 +35,16 @@ class UrlWithTrailingSlashProcessor
     private $urlWithTrailingSlash;
 
     /**
+     * @var array Extensionsof files that must be excluded from trailing
+     */
+    private $excludes = [];
+
+    /**
      * UrlWithTrailingSlashProcessor constructor.
      * @param string $url
+     * @param array $excludes
      */
-    public function __construct(string $url = null)
+    public function __construct(string $url = null, array $excludes = [])
     {
         if (php_sapi_name() !== 'cli') {
             if ($url === null) {
@@ -52,6 +58,7 @@ class UrlWithTrailingSlashProcessor
         }
 
         $this->url = $url;
+        $this->excludes = $excludes;
     }
 
     /**
@@ -70,7 +77,7 @@ class UrlWithTrailingSlashProcessor
     public function getTrailingSlashURL(): UrlWithTrailingSlash
     {
         if (empty($this->urlWithTrailingSlash)) {
-            $this->urlWithTrailingSlash = new UrlWithTrailingSlash($this->url);
+            $this->urlWithTrailingSlash = new UrlWithTrailingSlash($this->url, $this->excludes);
         }
 
         return $this->urlWithTrailingSlash;

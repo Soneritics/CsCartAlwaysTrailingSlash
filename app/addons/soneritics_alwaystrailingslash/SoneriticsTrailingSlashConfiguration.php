@@ -42,4 +42,9 @@ class SoneriticsTrailingSlashConfiguration
      * @var bool Should the plugin run on POST requests
      */
     public static $actOnPost = false;
+
+    /**
+     * @var array File extensions that need to be excluded
+     */
+    public static $excludeFileTypes = ['php', 'htm', 'html'];
 }
